@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Calc {
@@ -26,7 +25,7 @@ public class Calc {
 		int min = Integer.MAX_VALUE;
 		startTime = System.currentTimeMillis();
 		for (String[] pair : words) {
-			int c = calculate(pair[0],pair[1]);
+			int c = lev(pair[0],pair[1]);
 			if (c<min) {
 				min = c;
 			}
@@ -35,29 +34,24 @@ public class Calc {
 		System.out.println(min);
 	}
 	
-	static int calculate(String x, String y) {
-        if (x.isEmpty()) {
-            return y.length();
+	private static int minimum(int a, int b, int c) {
+		return Math.min(Math.min(a, b), c);
+	}
+	
+	private static int lev(String a, String b) {
+		int aLen = a.length();
+		int bLen = b.length();
+        if (Math.min(aLen, bLen) == 0) {
+        	return Math.max(aLen, bLen);
+        }
+        
+        int k = 1;
+        if (a.charAt(0) == b.charAt(0)) {
+        	k = 0;
         }
  
-        if (y.isEmpty()) {
-            return x.length();
-        } 
- 
-        int substitution = calculate(x.substring(1), y.substring(1)) 
-         + costOfSubstitution(x.charAt(0), y.charAt(0));
-        int insertion = calculate(x, y.substring(1)) + 1;
-        int deletion = calculate(x.substring(1), y) + 1;
- 
-        return min(substitution, insertion, deletion);
-    }
-	
-	public static int costOfSubstitution(char a, char b) {
-        return a == b ? 0 : 1;
-    }
-	
-	public static int min(int... numbers) {
-        return Arrays.stream(numbers)
-          .min().orElse(Integer.MAX_VALUE);
+        return minimum(lev(a.substring(1), b) + 1,
+        		lev(a, b.substring(1)) + 1, 
+        		lev(a.substring(1), b.substring(1)) + k);
     }
 }
