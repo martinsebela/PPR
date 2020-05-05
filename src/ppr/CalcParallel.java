@@ -44,6 +44,7 @@ public class CalcParallel {
 //					min = c;
 //				}
 			}
+			//tohle se zavola jeste driv nez dobehnou vlakna, takze je to spatne
 			System.out.println("calculation time: " + (System.currentTimeMillis() - startTime) + "ms");
 			System.out.println(minValue.get());
 		} catch (IOException e) {
