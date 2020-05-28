@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CalcParallel {
@@ -44,9 +45,14 @@ public class CalcParallel {
 //					min = c;
 //				}
 			}
-			//tohle se zavola jeste driv nez dobehnou vlakna, takze je to spatne
-			System.out.println("calculation time: " + (System.currentTimeMillis() - startTime) + "ms");
-			System.out.println(minValue.get());
+			executor.shutdown();
+			try {
+				executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+				System.out.println("calculation time: " + (System.currentTimeMillis() - startTime) + "ms");
+				System.out.println(minValue.get());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			System.out.println("Cannot load resource. " + e.getMessage());
 		}
