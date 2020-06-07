@@ -20,18 +20,20 @@ public class CalcParallel {
         long startTime = System.currentTimeMillis();
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_NUMBER);
         try {
-            Collection<String[]> words = Reader.readFromFile();
+            Collection<WordPair> words = Reader.readFromFile();
             System.out.println(String.format("Read from file time: %s ms", (System.currentTimeMillis() - startTime)));
             startTime = System.currentTimeMillis();
 
-            for (String[] pair : words) {
-                executor.submit(() -> {
-                    int c = Algorithm.levenshtein(pair[0], pair[1]);
-                    if (c < minValue.get()) {
-                        minValue.set(c);
+            words.forEach(
+                    item -> {
+                        executor.submit(() -> {
+                            int c = Algorithm.levenshtein(item.getFirst(), item.getSecond());
+                            if (c < minValue.get()) {
+                                minValue.set(c);
+                            }
+                        });
                     }
-                });
-            }
+            );
             executor.shutdown();
 
             try {
